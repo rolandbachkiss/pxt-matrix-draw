@@ -1,0 +1,5 @@
+matrixCore.initNeoPixel(DigitalPin.P0, MatrixLayout.Grid2x2)
+matrixDraw.line(0, 0, 31, 31, matrixCore.rgb(255, 0, 0))
+matrixDraw.rect(2, 2, 10, 10, matrixCore.rgb(0, 255, 0))
+matrixDraw.fillCircle(16, 16, 5, matrixCore.rgb(0, 0, 255))
+matrixCore.updateDisplay()
