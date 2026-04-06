@@ -1,7 +1,15 @@
 /**
  * Drawing primitives for NeoPixel matrix panels.
- * All functions write directly into the strip buffer via matrixCore.setPixelXY().
- * circle() uses sub-pixel alpha blending for smooth antialiased edges.
+ *
+ * Depends on pxt-matrix-core for the framebuffer and pixel output.
+ *
+ * Provides:
+ * - Lines (Bresenham algorithm, with fast paths for horizontal/vertical)
+ * - Rectangles (outline and filled)
+ * - Circles (antialiased outline via alpha blending, and filled)
+ *
+ * All functions write directly into the strip buffer via matrixCore.setPixelXY()
+ * or matrixCore.blendPixelXY(). Call matrixCore.updateDisplay() to push to LEDs.
  */
 //% color="#00A0A0" weight=90 icon="\uf1fc"
 //% groups='["Lines","Rectangles","Circles"]'
@@ -82,12 +90,13 @@ namespace matrixDraw {
     // -----------------------------------------------------------------------
 
     /**
-     * Draw a line between two points.
-     * @param x0 start x
-     * @param y0 start y
-     * @param x1 end x
-     * @param y1 end y
-     * @param c packed RGB color
+     * Draw a line between two points using Bresenham's algorithm.
+     * Clips to matrix bounds automatically.
+     * @param x0 start x (0–31)
+     * @param y0 start y (0–31)
+     * @param x1 end x (0–31)
+     * @param y1 end y (0–31)
+     * @param c packed RGB color (use matrixCore.rgb(r, g, b))
      */
     //% blockId=matrix_draw_line
     //% block="draw line from x $x0 y $y0 to x $x1 y $y1 color $c"
@@ -102,7 +111,12 @@ namespace matrixDraw {
     // -----------------------------------------------------------------------
 
     /**
-     * Draw a rectangle outline.
+     * Draw a rectangle outline (4 edges, corners shared).
+     * @param x left edge (0–31)
+     * @param y top edge (0–31)
+     * @param w width in pixels (1–32)
+     * @param h height in pixels (1–32)
+     * @param c packed RGB color (use matrixCore.rgb(r, g, b))
      */
     //% blockId=matrix_draw_rect
     //% block="draw rectangle x $x y $y width $w height $h color $c"
@@ -117,7 +131,12 @@ namespace matrixDraw {
     }
 
     /**
-     * Fill a rectangle with a solid color.
+     * Fill a circle with a solid color (hard edges, no antialiasing).
+     * Uses horizontal scanlines for efficient filling.
+     * @param cx center x (0–31)
+     * @param cy center y (0–31)
+     * @param r radius in pixels (0–16)
+     * @param c packed RGB color (use matrixCore.rgb(r, g, b))
      */
     //% blockId=matrix_draw_fill_rect
     //% block="fill rectangle x $x y $y width $w height $h color $c"
@@ -135,12 +154,12 @@ namespace matrixDraw {
 
     /**
      * Draw an antialiased circle outline.
-     * Pixels near the ideal edge are alpha-blended for smooth appearance.
-     * Uses one Math.sqrt call per candidate pixel in the edge band.
-     * @param cx center x
-     * @param cy center y
-     * @param r radius in pixels
-     * @param c packed RGB color
+     * Pixels near the ideal edge are alpha-blended for smooth appearance
+     * using matrixCore.blendPixelXY(). The edge band is 1 pixel wide.
+     * @param cx center x (0–31)
+     * @param cy center y (0–31)
+     * @param r radius in pixels (0–16)
+     * @param c packed RGB color (use matrixCore.rgb(r, g, b))
      */
     //% blockId=matrix_draw_circle
     //% block="draw circle center x $cx y $cy radius $r color $c"
@@ -176,11 +195,13 @@ namespace matrixDraw {
     }
 
     /**
-     * Fill a circle with a solid color (hard edges).
-     * @param cx center x
-     * @param cy center y
-     * @param r radius in pixels
-     * @param c packed RGB color
+     * Draw a line between two points using Bresenham's algorithm.
+     * Clips to matrix bounds automatically.
+     * @param x0 start x (0–31)
+     * @param y0 start y (0–31)
+     * @param x1 end x (0–31)
+     * @param y1 end y (0–31)
+     * @param c packed RGB color (use matrixCore.rgb(r, g, b))
      */
     //% blockId=matrix_draw_fill_circle
     //% block="fill circle center x $cx y $cy radius $r color $c"
