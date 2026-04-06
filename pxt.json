@@ -1,6 +1,6 @@
 {
     "name": "matrix-draw",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Line, rectangle and circle drawing primitives for NeoPixel matrix panels",
     "license": "MIT",
     "dependencies": {
